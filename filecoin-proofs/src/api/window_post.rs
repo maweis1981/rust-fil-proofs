@@ -23,6 +23,8 @@ use crate::{
     },
     PoStType,
 };
+//add by maven 
+use rayon::prelude::*;
 
 /// Generates a Window proof-of-spacetime with provided vanilla proofs.
 pub fn generate_window_post_with_vanilla<Tree: 'static + MerkleTreeTrait>(
@@ -122,8 +124,10 @@ pub fn generate_window_post<Tree: 'static + MerkleTreeTrait>(
         FallbackPoStCompound::setup(&setup_params)?;
     let groth_params = get_post_params::<Tree>(&post_config)?;
 
+    info!("generate_window_post:par_iter");
+    //modified by maven, replace iter() with par_iter() 
     let trees: Vec<_> = replicas
-        .iter()
+        .par_iter()
         .map(|(sector_id, replica)| {
             replica
                 .merkle_tree(post_config.sector_size)
